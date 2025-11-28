@@ -1,4 +1,5 @@
-# EXP 2 : Linear and Circular Convolution
+
+# EXP 1 : Linear and Circular Convolution
 
 ## AIM: 
 
@@ -8,106 +9,78 @@
 PC installed with SCILAB. 
 
 ## PROGRAM (Linear Convolution): 
-```clc;
+```
+clc;
 clear;
+close;
 
-// Input signals
-x = [1 1 1 1];
-h = [1 2 3 4];
-
-m = length(x);
-n = length(h);
-
-// Time indices for x and h
-a = 0:m-1;
-b = 0:n-1;
-
-// Plot input signal x[n]
+x = input("Enter x(n) as a vector, e.g., [1 2 0 2]: ");
+h = input("Enter h(n) as a vector, e.g., [0 1]: ");
+y = conv(x, h);
+disp(y, "Linear Convolution y(n) = ")
 subplot(3,1,1);
-plot2d3(a, x);
-xlabel('Time n');
-ylabel('Amplitude');
-title('Graphical Representation of Input Signal x[n]');
+plot2d3(0:length(x)-1, x);
+title("x(n)");
+xlabel("n");
+ylabel("Amplitude");
 
-// Plot impulse response h[n]
 subplot(3,1,2);
-plot2d3(b, h);
-xlabel('Time n');
-ylabel('Amplitude');
-title('Graphical Representation of Impulse Signal h[n]');
+plot2d3(0:length(h)-1, h);
+title("h(n)");
+xlabel("n");
+ylabel("Amplitude");
 
-// Initialize convolution result
-y = zeros(1, m+n-1);
-
-// Manual convolution calculation
-for i = 1:m+n-1
-    conv_sum = 0;
-    for j = 1:m
-        if ( (i-j+1) > 0 & (i-j+1) <= n )
-            conv_sum = conv_sum + x(j) * h(i-j+1);
-        end
-    end
-    y(i) = conv_sum;
-end
-
-// Display convolution result
-disp(y, 'Convolution Output y[n] = ');
-
-// Time index for output
-t = 0:m+n-2;
-
-// Plot convolution result y[n]
 subplot(3,1,3);
-plot2d3(t, y);
-xlabel('Time n');
-ylabel('Amplitude');
-title('Graphical Representation of Output Signal y[n]');
-
+plot2d3(0:length(y)-1, y);
+title("y(n) = x(n) * h(n)");
+xlabel("n");
+ylabel("Amplitude");
 ```
-
 ## PROGRAM (Circular Convolution): 
-
-```clc; clear;
-
-// Sequences
-x = [1 1 1 1];
-h = [1 2 3];
-
-// Plot input & impulse
-subplot(3,1,1); plot2d3(0:length(x)-1, x); title('Input sequence');
-subplot(3,1,2); plot2d3(0:length(h)-1, h); title('Impulse sequence');
-
-// Zero padding
-N = max(length(x), length(h));
-x = [x, zeros(1, N-length(x))];
-h = [h, zeros(1, N-length(h))];
-
-// Circular convolution
-y = zeros(1,N);
-for n=1:N
-  for k=1:N
-    j = n-k+1; if j<=0 then j=N+j; end
-    y(n) = y(n) + x(k)*h(j);
-  end
-end
-
-// Plot result
-subplot(3,1,3); plot2d3(0:N-1, y); title('Circular convolution');
-disp(y)
-
 ```
+clc;
+clear;
+close;
 
+x = input("Enter x(n) as a vector, e.g., [1 2 3 4]: ");
+h = input("Enter h(n) as a vector, e.g., [1 2 3 4]: ");
+
+N = length(x);
+if length(h) < N then
+    h = [h, zeros(1, N - length(h))];
+elseif length(h) > N then
+    x = [x, zeros(1, length(h) - N)];
+    N = length(h);
+end
+X = fft(x, -1);   
+H = fft(h, -1);
+Y = X .* H;
+y = fft(Y, 1);    
+disp(real(y), "Circular Convolution y(n) = ");
+subplot(3,1,1);
+plot2d3(0:N-1, x);
+title("Input Sequence x[n]");
+xlabel("n");
+ylabel("Amplitude");
+
+subplot(3,1,2);
+plot2d3(0:N-1, h);
+title("Input Sequence h[n]");
+xlabel("n");
+ylabel("Amplitude");
+
+subplot(3,1,3);
+plot2d3(0:N-1, real(y));
+title("Circular Convolution y[n]");
+xlabel("n");
+ylabel("Amplitude");
+```
 ## OUTPUT (Linear Convolution): 
-<img width="1918" height="1011" alt="image" src="https://github.com/user-attachments/assets/33cc0549-495d-41ce-ad9c-854cecebd384" />
+<img width="764" height="721" alt="image" src="https://github.com/user-attachments/assets/948214ca-9fd0-4fba-966e-f4dbf87272d2" />
+
+## OUTPUT (Circular Convolution):
+<img width="762" height="719" alt="image" src="https://github.com/user-attachments/assets/6742ad5c-4fbc-49dd-8037-c44f798ff159" />
 
 
-
-
-## OUTPUT (Circular Convolution): 
-<img width="1904" height="1012" alt="image" src="https://github.com/user-attachments/assets/d95d3927-c54f-44bf-8a86-6941dd11bde5" />
-
-
-
-
-## RESULT: 
-Linear and Circular Convolution are successfully executed in scilab
+## RESULT:
+Thus, the linear convolution and circular convolution of the two given sequences were performed and its result was verified.
